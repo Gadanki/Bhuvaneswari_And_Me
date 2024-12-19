@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-image: url('https://i.pinimg.com/originals/01/97/9c/01979cf1b2debf9e52872adf25cf3e5c.jpg'); /* Replace with the actual image path */
+      background-size: cover; 
+      background-position: center; 
+      background-repeat: no-repeat;
+      min-height: 100vh; 
+      color: white; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+    }
+    .content-container {
+      position: relative;
+      top: 20%; 
+      background-color: rgb(120, 120, 120); 
+      padding: 30px;
+      border-radius: 10px;
+      color: white;
+      width: 80%; 
+      max-width: 600px; 
+      margin: 20px;
+    }
+    
+  
+    .weather {
+      margin-top: 20px;
+      font-size: 1.5em;
+    }
+    input {
+      padding: 10px;
+      margin: 10px;
+      font-size: 1em;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: blue;
+      border-radius: 5px;
+      color:white ;
+    }
+    button:hover {
+    background-color: darkblue; 
+    cursor: pointer;            
+}
+
+button:active {
+    transform: scale(0.95);      
+    background-color: rgb(84, 154, 112);      
+}
+  </style>
+</head>
+<body>
+  <div class="content-container">
+  <h1>Weather App</h1>
+  <p>Enter a city name to see its weather:</p>
+  <input type="text" id="city-input" placeholder="Enter city name">
+  <button id="get-weather">Get Weather</button>
+   <div id="weather-container" class="weather">
+    <!-- Weather info will appear here -->
+  </div>
+  </div>
+ 
+  <script src="script.js"></script>
+</body>
+</html>
