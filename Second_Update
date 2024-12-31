@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Map with Time and Weather</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([20, 0], 2);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Event listener for clicks on the map
+        map.on('click', function (e) {
+            const { lat, lng } = e.latlng;
+            fetchCountry(lat, lng);
+        });
+
+        // Fetch country name using reverse geocoding
+        async function fetchCountry(lat, lng) {
+            const geocodingUrl = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=180b200c39344c0aa0519ded76ace6b3`;
+            try {
+                const response = await fetch(geocodingUrl);
+                const data = await response.json();
+                const country = data.results[0].components.country;
+                fetchTimeAndWeather(lat, lng, country);
+            } catch (error) {
+                console.error('Error fetching country:', error);
+                alert('Unable to determine country. Try again.');
+            }
+        }
+
+        // Fetch time and weather for the country
+        async function fetchTimeAndWeather(lat, lng, country) {
+            try {
+                // Fetch local time
+                const timeResponse = await fetch(`https://api.timezonedb.com/v2.1/get-time-zone?key=LPI5CYKABIXB&format=json&by=position&lat=${lat}&lng=${lng}`);
+                const timeData = await timeResponse.json();
+                const currentTime = timeData.formatted;
+
+                // Fetch weather
+                const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${country}&appid=223072ee0351a588feb16120de8beccd&units=metric`);
+                const weatherData = await weatherResponse.json();
+                const weather = weatherData.weather[0].description;
+                const temperature = weatherData.main.temp;
+
+                // Display data on the map
+                displayInfo(lat, lng, country, currentTime, weather, temperature);
+            } catch (error) {
+                console.error('Error fetching time or weather:', error);
+                alert('Unable to fetch time or weather data.');
+            }
+        }
+
+        // Display information in a popup
+        function displayInfo(lat, lng, country, time, weather, temperature) {
+            L.popup()
+                .setLatLng([lat, lng])
+                .setContent(`
+                    <b>Country:</b> ${country}<br>
+                    <b>Time:</b> ${time}<br>
+                    <b>Weather:</b> ${weather}, ${temperature}°C
+                `)
+                .openOn(map);
+        }
+    </script>
+</body>
+</html>
